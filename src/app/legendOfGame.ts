@@ -52,32 +52,38 @@ export const legendOfGame = {
         {
           name: 'minProcessor',
           search: ['>Минимальные', '>Процессор', '<div', '>'],
-          end: '<'
+          end: '<',
+          separator: '_'
         },
         {
           name: 'minVideoCard',
           search: ['>Минимальные', '>Видеокарта:', '<div', '>'],
-          end: '<'
+          end: '<',
+          separator: '_'
         },
         {
           name: 'minRAM',
           search: ['>Минимальные', '>Оперативная', '<div', '>'],
-          end: '<'
+          end: '<',
+          separator: '_'
         },
         {
           name: 'maxProcessor',
           search: ['>Рекомендуемые', '>Процессор', '<div', '>'],
-          end: '<'
+          end: '<',
+          separator: '_'
         },
         {
           name: 'maxVideoCard',
           search: ['>Рекомендуемые', '>Видеокарта:', '<div', '>'],
-          end: '<'
+          end: '<',
+          separator: '_'
         },
         {
           name: 'maxRAM',
           search: ['>Рекомендуемые', '>Оперативная', '<div', '>'],
-          end: '<'
+          end: '<',
+          separator: '_'
         }
       ]
   };

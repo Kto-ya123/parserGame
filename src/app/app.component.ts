@@ -2,6 +2,7 @@ import {Component} from '@angular/core';
 import {elementOfSearch} from '../assets/elementOfSearch';
 import {parsingMode} from './parsingMode';
 import {legendOfGame, templateGame} from './legendOfGame';
+import {legendOfGames} from './legendOfGames';
 
 @Component({
   selector: 'app-root',
@@ -44,7 +45,7 @@ export class AppComponent {
           response.body.getReader()
             .read()
             .then(({value, done}) => {
-              this.data = this.parseDocumentbyLegend(decoder.decode(value), this.legendOfParse);
+              this.data.push(... this.parseDocumentbyLegend(decoder.decode(value), this.legendOfParse));
               let fileContent = templateGame;
               let fileName = 'concept_computer_game_'
               this.data.forEach((element) => {
@@ -58,7 +59,7 @@ export class AppComponent {
                   element.value = 'file://' + element.value.substring(element.value.lastIndexOf('/') + 1) + '.jfif';
                 }
                 fileContent = fileContent.split(element.name).join(element.value);
-              })
+              });
 
               this.writeContents(fileContent, fileName+'.scs', 'text/plain');
             });
@@ -80,7 +81,7 @@ export class AppComponent {
           data.push(element);
           this.allUrlGames += data[data.length - 1].value + '\n';
         } else {
-          break;
+
         }
       } while (this.legendOfParse.mode === parsingMode.reapitable.valueOf());
     });
@@ -90,7 +91,9 @@ export class AppComponent {
   private parseElement(document: string, legendElement: any, indexOfStart = 0): string {
     legendElement.search.forEach((searchElement) => {
       indexOfStart = document.indexOf(searchElement, indexOfStart + 1);
-      if (indexOfStart === -1) {
+      if (indexOfStart === -1 && this.legendOfParse.mode === parsingMode.reapitable.valueOf()) {
+        console.log(legendElement.name);
+        console.log(searchElement);
         this.indexParse = -1;
       }
     });
