@@ -1,22 +1,43 @@
 import {Component} from '@angular/core';
 import {elementOfSearch} from '../assets/elementOfSearch';
-import {parsingMode} from './parsingMode';
-import {legendOfGame, templateGame} from './legendOfGame';
-import {legendOfGames} from './legendOfGames';
+import {legendOfGame} from '../parser/legendsParse/legendOfGame';
+import {ParserComputerGameFromURL} from '../parser/ParserComputerGame';
+import {ParsedGame} from '../parser/parsedGame';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
+
 export class AppComponent {
   title = 'parserComputerGame';
   url: string;
-  indexParse: number;
   data: elementOfSearch[] = [];
-  legendOfParse: any = legendOfGame;
-  currentPage: number;
-  allUrlGames = '';
+  legendOfParse;
+  decoder: TextDecoder;
+  parser: ParserComputerGameFromURL
+
+  constructor() {
+    this.legendOfParse = legendOfGame;
+    this.parser = new ParserComputerGameFromURL(legendOfGame);
+  }
+
+  public downloadParsedFiles(): void {
+    for (let currentPage = 1; currentPage <= this.legendOfParse.pages; currentPage++) {
+      fetch(this.url + this.legendOfParse.templateUrl)
+        .then((response) => {
+          response.body.getReader()
+            .read()
+            .then(({value, done}) => {
+              const parsedGame: ParsedGame = this.parser.getParsedDocument(value);
+              this.downloadImage(parsedGame.imageUrl);
+              this.writeContents(parsedGame.fileContent, parsedGame.fileName + '.scs', 'text/plain');
+            });
+        })
+        .then(data => console.log(data));
+    }
+  }
 
 
   writeContents(content, fileName, contentType) {
@@ -32,75 +53,5 @@ export class AppComponent {
     a.href = url;
     a.download = url;
     a.click();
-  }
-
-  public getPage(): void {
-    this.currentPage = 1;
-    const decoder = new TextDecoder('utf-8');
-    console.log(this.legendOfParse.pages);
-    for (; this.currentPage <= this.legendOfParse.pages; this.currentPage++) {
-      console.log(this.url + this.legendOfParse.templateUrl + this.currentPage);
-      fetch(this.url + this.legendOfParse.templateUrl)
-        .then((response) => {
-          response.body.getReader()
-            .read()
-            .then(({value, done}) => {
-              this.data.push(... this.parseDocumentbyLegend(decoder.decode(value), this.legendOfParse));
-              let fileContent = templateGame;
-              let fileName = 'concept_computer_game_'
-              this.data.forEach((element) => {
-                if (element.name === 'nameGame') {
-                  element.value = element.value.toLowerCase();
-                  fileName += element.value;
-
-                }
-                if (element.name === 'imageGame') {
-                  this.downloadImage(element.value);
-                  element.value = 'file://' + element.value.substring(element.value.lastIndexOf('/') + 1) + '.jfif';
-                }
-                fileContent = fileContent.split(element.name).join(element.value);
-              });
-
-              this.writeContents(fileContent, fileName+'.scs', 'text/plain');
-            });
-        })
-        .then((data) => {
-        });
-    }
-  }
-
-  private parseDocumentbyLegend(document: string, legendObject: any): elementOfSearch[] {
-    const data: elementOfSearch[] = [];
-    this.indexParse = 0;
-    this.legendOfParse.legend.forEach((legendElement) => {
-      do {
-        const element = new elementOfSearch(legendElement.name,
-          this.legendOfParse.prefix
-          + this.parseElement(document, legendElement, this.indexParse).replace(/ /g, legendElement.separator));
-        if (this.indexParse !== -1) {
-          data.push(element);
-          this.allUrlGames += data[data.length - 1].value + '\n';
-        } else {
-
-        }
-      } while (this.legendOfParse.mode === parsingMode.reapitable.valueOf());
-    });
-    return data;
-  }
-
-  private parseElement(document: string, legendElement: any, indexOfStart = 0): string {
-    legendElement.search.forEach((searchElement) => {
-      indexOfStart = document.indexOf(searchElement, indexOfStart + 1);
-      if (indexOfStart === -1 && this.legendOfParse.mode === parsingMode.reapitable.valueOf()) {
-        console.log(legendElement.name);
-        console.log(searchElement);
-        this.indexParse = -1;
-      }
-    });
-    const indexOfEnd = document.indexOf(legendElement.end, indexOfStart + 1);
-    if (this.legendOfParse.mode === parsingMode.reapitable.valueOf() && this.indexParse !== -1) {
-      this.indexParse = indexOfStart;
-    }
-    return document.substring(indexOfStart + 1, indexOfEnd);
   }
 }

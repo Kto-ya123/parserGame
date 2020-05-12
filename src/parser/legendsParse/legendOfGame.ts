@@ -1,7 +1,8 @@
-import {parsingMode} from './parsingMode';
+import {parsingMode} from '../parsingMode';
 
 
 export const legendOfGame = {
+    prependFileName: 'concept_computer_game_',
     mode: parsingMode.non_reapitable.valueOf(),
     pages: 1,
     templateUrl: '',

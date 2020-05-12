@@ -1,4 +1,4 @@
-import {parsingMode} from './parsingMode';
+import {parsingMode} from '../parsingMode';
 
 
 export const legendOfGames = {

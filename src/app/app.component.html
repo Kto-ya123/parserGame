@@ -1,14 +1,8 @@
 <div>
   <input type="text" [(ngModel)]="url"/>
   <div>
-    <button (click)="getPage()">Parse</button>
+    <button (click)="downloadParsedFiles()">Parse</button>
   </div>
-</div>
-<div>
-  <label *ngIf="data">{{currentPage}} of {{legendOfParse.allPages}}; allItems: {{data.length}}</label>
-</div>
-<div>
-  <textarea type="text">{{allUrlGames}}</textarea>
 </div>
 <div *ngFor="let element of data">
   <label>{{element.name}} - {{element.value}}</label>
