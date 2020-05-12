@@ -37,9 +37,6 @@ export class Parser {
 
       if (indexOfStart !== -1) {
         const indexOfEnd = document.indexOf(legendElement.end, indexOfStart + 1);
-        console.log(indexOfStart);
-        console.log(indexOfEnd);
-        console.log(document.substring(indexOfStart + 1, indexOfEnd));
         elements.push(new elementOfSearch(legendElement.name, document.substring(indexOfStart + 1, indexOfEnd)));
       }
     }while (indexOfStart !== -1 && reapitable);

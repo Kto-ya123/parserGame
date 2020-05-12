@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 import {elementOfSearch} from '../assets/elementOfSearch';
 import {legendOfGame} from '../parser/legendsParse/legendOfGame';
-import {ParserComputerGameFromURL} from '../parser/ParserComputerGame';
+import {ParserComputerGameFromURL} from '../parser/parserComputerGame';
 import {ParsedGame} from '../parser/parsedGame';
 
 @Component({
